@@ -20,8 +20,15 @@ const PORT = process.env.PORT || 8000;
 
 app.use(
   cors({
-    origin: "https://task-frontend-vhta.onrender.com/",
+    origin: [
+      "https://task-frontend-ruby-theta.vercel.app",
+      "https://task-frontend-vhta.onrender.com",
+      "http://localhost:5173",
+      "http://localhost:3000"
+    ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
   })
 );
 

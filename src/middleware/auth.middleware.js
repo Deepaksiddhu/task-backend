@@ -5,9 +5,16 @@ import e from "express";
 
 export const authMiddleware = async (req,res,next) =>{
     try {
+        console.log("=== AUTH MIDDLEWARE DEBUG ===");
+        console.log("Request headers:", req.headers);
+        console.log("All cookies:", req.cookies);
+        console.log("JWT cookie:", req.cookies?.jwt);
+        console.log("Cookie header:", req.headers.cookie);
+        
         const token = req.cookies?.jwt;
         if(!token)
         {
+            console.log("No token found in cookies");
             return res.status(401).json({
                 message:"Unauthorized - No token provided"
             })
@@ -16,8 +23,12 @@ export const authMiddleware = async (req,res,next) =>{
         let decoded;
 
         try {
+            console.log("Attempting to verify token:", token.substring(0, 20) + "...");
+            console.log("JWT_SECRET exists:", !!process.env.JWT_SECRET);
             decoded = jwt.verify(token,process.env.JWT_SECRET)
+            console.log("Token verified successfully, decoded:", decoded);
         } catch (error) {
+            console.log("JWT verification failed:", error.message);
             return res.status(401).json({
                 message:"Unauthorized - Invalid token"
             })
@@ -87,7 +98,7 @@ export const checkAdmin = async (req,res,next) =>{
 
     } catch (error) {
         console.log("Error :",error);
-        res.status(500).json({
+        return res.status(500).json({
             message:"Error checking admin role",
             success:false
         })
