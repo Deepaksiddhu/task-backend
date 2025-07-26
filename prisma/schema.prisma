@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/acc
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum Priority {
+  low
+  medium
+  high
+}
+
+model User {
+  id        String      @id @default(uuid())
+  name      String
+  email     String      @unique
+  password  String
+  role UserRole     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // One-to-many: A user can have many tasks assigned to them
+  assignedTasks Task[] @relation("AssignedTasks")
+}
+
+model Task {
+  id           String    @id @default(uuid())
+  title        String
+  description  String
+  priority     Priority  @default(medium)
+  dueDate      DateTime
+  createdAt    DateTime  @default(now())
+
+  // Foreign key to User - when user is deleted, set assignedTo to null
+  assignedTo   User?     @relation("AssignedTasks", fields: [assignedToId], references: [id], onDelete: SetNull)
+  assignedToId String?
+}
