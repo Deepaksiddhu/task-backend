@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 8000;
 
 app.use(
   cors({
-    origin: "https://task-frontend-ruby-theta.vercel.app",
+    origin: "https://task-frontend-vhta.onrender.com/",
     credentials: true,
   })
 );
